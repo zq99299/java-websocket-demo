@@ -1,0 +1,54 @@
+group 'cn.mrcode.javawebsocketdemo'
+version '1.0-SNAPSHOT'
+
+subprojects { p ->
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    sourceCompatibility = 1.8
+    configurations.all {
+        // check for updates every build
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
+    configurations.compile.resolutionStrategy {
+        cacheChangingModulesFor 0, 'seconds'
+    }
+    compileJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+        [compileJava]*.options*.encoding = 'UTF-8'
+    }
+    compileTestJava {
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
+        [compileTestJava]*.options*.encoding = 'UTF-8'
+    }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://maven.repository.redhat.com/ga/" }
+        maven { url "http://maven.aliyun.com/nexus/content/groups/public" }
+    }
+
+    //@formatter:off
+    ext.junitVersion                            = "4.12"
+    ext.slf4jVersion                            = "1.7.21"
+    ext.logbackVersion                          = "1.1.7"
+    ext.janinoVersion                           = "2.7.8"                   //logback 依赖
+    ext.springframeworkVersion                  = "4.2.3.RELEASE"
+    ext.fastjsonVersion                         = "1.2.17"
+    ext.commonsLang3Version                     = "3.4"
+    ext.commonsCollections4Version              = "4.1"
+     //@formatter:on
+    dependencies {
+        testCompile("junit:junit:${junitVersion}")
+        compile "org.slf4j:slf4j-api:${slf4jVersion}"
+        compile "ch.qos.logback:logback-core:${logbackVersion}"
+        compile "ch.qos.logback:logback-classic:${logbackVersion}"
+        compile "org.codehaus.janino:janino:${janinoVersion}"
+    }
+    //跳过所有文件的编译测试；不是跳过compileTestJava task 而是在执行该task的时候，跳过所有的测试文件
+    test {
+        exclude '**/*.class'
+    }
+}

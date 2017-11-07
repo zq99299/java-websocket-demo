@@ -1,0 +1,13 @@
+apply plugin: 'war'
+description = "基本的websocket"
+
+dependencies {
+    compile "org.springframework:spring-web:${springframeworkVersion}"
+    compile "org.springframework:spring-webmvc:${springframeworkVersion}"
+    compile "org.springframework:spring-test:${springframeworkVersion}"
+    compile "org.springframework:spring-context-support:${springframeworkVersion}"
+    compile "org.springframework:spring-websocket:${springframeworkVersion}"
+    compile "com.alibaba:fastjson:${fastjsonVersion}"
+    compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
+    compile "org.apache.commons:commons-collections4:${commonsCollections4Version}"
+}
