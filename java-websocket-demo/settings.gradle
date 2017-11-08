@@ -1,3 +1,4 @@
 rootProject.name = 'java-websocket-demo'
 include 'websocket'
+include 'stomp'
 
