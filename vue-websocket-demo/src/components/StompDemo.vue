@@ -32,7 +32,10 @@
     <el-card class="box-card">
       <div slot="header">
         <span>需要订阅 - 动漫</span>
-        <el-button style="float: right; padding: 3px 0" type="text">订阅</el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" v-if="!subscribeNews.comic" @click="comicSubscribe">
+          订阅
+        </el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" v-else>退订</el-button>
       </div>
       <div v-for="o in 4" :key="o" class="text item">
         {{'列表内容 ' + o }}
@@ -74,12 +77,17 @@
         },
         connectLoading: false,
         isConnect: false,
-        publicNews: []
+        publicNews: [],
+        subscribeNews: {
+          comic: '',  // 动漫
+          gossip: '' // 八卦
+        }
       }
     },
     created () {
       this.varStore = {
-        stomp: null // 链接实例
+        stomp: null, // 链接实例
+        otherSubscribe: null  // 其他两个订阅的订阅实例
       }
     },
     mounted () {
@@ -129,6 +137,18 @@
           // 把获取到的列表赋值给该变量，页面中会循环出该信息
           this.publicNews = news
         })
+      },
+      // 动漫订阅
+      comicSubscribe () {
+        // 发送信息
+        this.varStore.stomp.send('/app/queue/other', {
+          type: 1, // 订阅
+          body: 'comic' // 订阅的内容是动漫
+        })
+        // 如果还没有开启一个订阅实例，则开启
+        if (!this.varStore.otherSubscribe) {
+
+        }
       }
     }
   }
