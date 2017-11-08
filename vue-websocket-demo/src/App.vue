@@ -1,16 +1,29 @@
 <template>
   <div id="app">
-    <div class="nav">
-      <router-link to="/">原生H5,websocket</router-link>
-      <router-link to="/sockjs-client">sockjs-client</router-link>
-      <router-link to="/stomp-demo">Stomp示例</router-link>
-    </div>
-    <router-view/>
+    <el-container>
+      <el-header>
+        <el-menu :default-active="$router.currentRoute.path" mode="horizontal" :router="true">
+          <el-menu-item index="/">原生H5,websocket</el-menu-item>
+          <el-menu-item index="/sockjs-client">sockjs-client</el-menu-item>
+          <el-menu-item index="/stomp-demo">Stomp示例</el-menu-item>
+        </el-menu>
+      </el-header>
+      <el-main>
+        <router-view/>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
 <script>
+  import ElHeader from '../node_modules/element-ui/packages/header/src/main.vue'
+  import ElMain from '../node_modules/element-ui/packages/main/src/main.vue'
+
   export default {
+    components: {
+      ElMain,
+      ElHeader
+    },
     name: 'app'
   }
 </script>
