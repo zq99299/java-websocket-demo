@@ -55,4 +55,12 @@ public class DemoController extends BaseController {
     private int randomInt() {
         return RandomUtils.nextInt(100, 1000);
     }
+
+    /**
+     * 记住这里的地址
+     */
+    @MessageMapping("/queue/other")
+    public void otherSubscribe(String msg) {
+        System.out.println(msg);
+    }
 }
