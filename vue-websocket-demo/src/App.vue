@@ -3,6 +3,7 @@
     <div class="nav">
       <router-link to="/">原生H5,websocket</router-link>
       <router-link to="/sockjs-client">sockjs-client</router-link>
+      <router-link to="/stomp-demo">Stomp示例</router-link>
     </div>
     <router-view/>
   </div>
