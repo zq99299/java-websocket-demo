@@ -5,6 +5,8 @@ spring-websocket、sockjs、stomp入门教程。
 
 如今由于项目需要，再次接触spring-websocket，有了更深入的理解，[这里写了一篇文章](https://zq99299.github.io/essay-note/chapter/websocket/spring.html)。记录了下来，本项目是该文章的实验过程。
 
+![](https://raw.githubusercontent.com/zq99299/java-websocket-demo/master/demo.png)
+
 ## 该项目如何部署？
 
 项目分为两部分，后端和前端。后端采用Java编写，前端采用vue-cli编写。
@@ -13,8 +15,8 @@ spring-websocket、sockjs、stomp入门教程。
 
 java-websocket-demo 后端项目分为两个web项目：
 
-websocket ： 部署的时候请把端口设置为 8080，前端页面中写死的该端口
-stomp ： 部署的时候请把端口设置为 8082.
+* websocket ： 部署的时候请把端口设置为 8080，前端页面中写死的该端口
+* stomp ： 部署的时候请把端口设置为 8082.
 
 两个都是web项目，使用gradle构建，只配置了idea的开发环境。导入idea后，按普通web项目部署即可。
 
