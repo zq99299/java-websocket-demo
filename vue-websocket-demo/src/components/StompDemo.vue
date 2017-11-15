@@ -1,5 +1,16 @@
 <template>
   <div class="stomp-demo">
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>本页功能</span>
+      </div>
+      <p>1. 服务链接</p>
+      <p>2. 广播订阅</p>
+      <p>3. 链接授权</p>
+      <p>4. 点对点订阅</p>
+      <p>5. 消息发送改变订阅的参数</p>
+      <p>其他功能未做，相信这些已经可以让你入门和更加深入的了解 spring-websocket的用法了</p>
+    </el-card>
     <div class="bar">
       <div class="btn-group">
         <el-button type="danger" v-if="isConnect" @click="disconnect">断开链接</el-button>
@@ -35,19 +46,22 @@
         <el-button style="float: right; padding: 3px 0" type="text" v-if="!subscribeNews.comic" @click="comicSubscribe">
           订阅
         </el-button>
-        <el-button style="float: right; padding: 3px 0" type="text" v-else>退订</el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" v-else @click="comicUnsubscribe">退订</el-button>
       </div>
-      <div v-for="o in 4" :key="o" class="text item">
-        {{'列表内容 ' + o }}
+      <div v-for="(item,index) in subscribeNews.comics" :key="index" class="text item">
+        {{item}}
       </div>
     </el-card>
     <el-card class="box-card">
       <div slot="header">
         <span>需要订阅 - 八卦</span>
-        <el-button style="float: right; padding: 3px 0" type="text">订阅</el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" v-if="!subscribeNews.gossip"
+                   @click="gossipSubscribe">订阅
+        </el-button>
+        <el-button style="float: right; padding: 3px 0" type="text" v-else @click="gossipUnsubscribe">退订</el-button>
       </div>
-      <div v-for="o in 4" :key="o" class="text item">
-        {{'列表内容 ' + o }}
+      <div v-for="(item,index) in subscribeNews.gossips" :key="index" class="text item">
+        {{item}}
       </div>
     </el-card>
   </div>
@@ -79,8 +93,10 @@
         isConnect: false,
         publicNews: [],
         subscribeNews: {
-          comic: '',  // 动漫
-          gossip: '' // 八卦
+          comic: false,  // 动漫
+          gossip: false, // 八卦
+          comics: [],
+          gossips: []
         }
       }
     },
@@ -140,15 +156,61 @@
       },
       // 动漫订阅
       comicSubscribe () {
-        // 发送信息
-        this.varStore.stomp.send('/app/queue/other', {
-          type: 1, // 订阅
-          body: 'comic' // 订阅的内容是动漫
-        })
+        this.otherSubscribe('comic')
+        this.otherSubscribeInit()
+      },
+      // 八卦订阅
+      gossipSubscribe () {
+        this.otherSubscribe('gossip')
+        this.otherSubscribeInit()
+      },
+      otherSubscribeInit () {
         // 如果还没有开启一个订阅实例，则开启
         if (!this.varStore.otherSubscribe) {
-
+          // 注意这里的地址；和后端发送的地址是一样的;只是增加了/user的前端，该前缀标识是一个点对点的订阅
+          // 后端框架会特殊处理
+          this.varStore.otherSubscribe = this.varStore.stomp.subscribe('/user/queue/other', message => {
+            let news = JSON.parse(message.body)
+            // 把获取到的列表赋值给该变量，页面中会循环出该信息
+            this.subscribeNews.comics = news.comics
+            this.subscribeNews.gossips = news.gossips
+          })
         }
+      },
+      otherSubscribe (type) {
+        // 发送信息
+        this.varStore.stomp.send('/app/queue/other', {}, JSON.stringify({
+          type: 1, // 订阅
+          body: type // 订阅的内容是动漫还是八卦类型
+        }))
+        if (type === 'comic') {
+          this.subscribeNews.comic = true
+        } else {
+          this.subscribeNews.gossip = true
+        }
+      },
+      comicUnsubscribe () {
+        this.otherUnsubscribe('comic')
+      },
+      gossipUnsubscribe () {
+        this.otherUnsubscribe('gossip')
+      },
+      otherUnsubscribe (type) {
+        // 发送信息
+        this.varStore.stomp.send('/app/queue/other', {}, JSON.stringify({
+          type: 2, // 退订
+          body: type // 订阅的内容是动漫还是八卦类型
+        }))
+        if (type === 'comic') {
+          this.subscribeNews.comic = false
+        } else {
+          this.subscribeNews.gossip = false
+        }
+        /** 其实退订只需要下面这样就行了。但是这里是演示用参数怎么来控制应用程序
+         *  this.varStore.otherSubscribe.unsubscribe()
+         *  使用 unsubscribe 方法的时候呢，在后端会收到一个StompCommand，里面包含链接，订阅，取消订阅，端口等事件的状态
+         *  可以通过这个状态进行其他业务操作
+         */
       }
     }
   }
