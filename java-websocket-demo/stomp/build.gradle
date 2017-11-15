@@ -11,4 +11,5 @@ dependencies {
     compile "org.apache.commons:commons-lang3:${commonsLang3Version}"
     compile "org.apache.commons:commons-collections4:${commonsCollections4Version}"
     compile "org.springframework:spring-messaging:${springframeworkVersion}"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.2'
 }
